@@ -1,6 +1,13 @@
 from django.db import models
 from user.models import CustomUser
 from core.utils import generate_unique_id
+import re
+from django.core.exceptions import ValidationError
+
+
+def validate_iranian_phone_number(value):
+    if not re.match(r'^(?:0)?9\d{9}$', value):
+        raise ValidationError("Enter a valid Iranian phone number.")
 
 
 class Skill(models.Model):
@@ -25,7 +32,8 @@ class Profile(models.Model):
     last_name = models.CharField(max_length=100, blank=True)
     nickname = models.CharField(
         max_length=100, unique=True, null=True, blank=True)
-    email = models.EmailField(unique=True)
+    phone_number = models.CharField(
+        max_length=11, unique=True, validators=[validate_iranian_phone_number])
     age = models.PositiveIntegerField(blank=True, null=True)
     gender = models.CharField(max_length=1, choices=gender_choices, blank=True)
     state = models.CharField(max_length=100, blank=True)

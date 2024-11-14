@@ -4,13 +4,14 @@ from .models import Profile, WorkHistory, Education, Skill
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'nickname', 'email', 'is_active', 'created_at')
+    list_display = ('user', 'nickname', 'phone_number',
+                    'is_active', 'created_at')
     list_filter = ('gender', 'state', 'city', 'is_active')
-    search_fields = ('user__phone_number', 'slug_id', 'email')
+    search_fields = ('user__email', 'slug_id', 'phone_number')
     readonly_fields = ('slug_id', 'created_at', 'updated_at')
     fieldsets = (
         ("Personal Info", {
-            'fields': ('slug_id', 'user', 'first_name', 'last_name', 'nickname', 'email', 'age', 'gender', 'state', 'city', 'address')
+            'fields': ('slug_id', 'user', 'first_name', 'last_name', 'nickname', 'phone_number', 'age', 'gender', 'state', 'city', 'address')
         }),
         ("Professional Info", {
             'fields': ('skills', 'description_myself', 'cv_file')
@@ -51,4 +52,3 @@ class SkillAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
     ordering = ('name',)
-
