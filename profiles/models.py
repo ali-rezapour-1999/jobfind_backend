@@ -33,7 +33,7 @@ class Profile(models.Model):
     nickname = models.CharField(
         max_length=100, unique=True, null=True, blank=True)
     phone_number = models.CharField(
-        max_length=11, unique=True, blank=True ,  validators=[validate_iranian_phone_number])
+        max_length=11, unique=True, blank=True,  null=True, validators=[validate_iranian_phone_number])
     age = models.PositiveIntegerField(blank=True, null=True)
     gender = models.CharField(max_length=1, choices=gender_choices, blank=True)
     state = models.CharField(max_length=100, blank=True)

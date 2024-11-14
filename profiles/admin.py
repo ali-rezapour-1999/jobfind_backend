@@ -30,7 +30,7 @@ class WorkHistoryAdmin(admin.ModelAdmin):
     list_display = ('user', 'job_title', 'company_name',
                     'start_date', 'end_date')
     list_filter = ('company_name', 'start_date', 'end_date')
-    search_fields = ('profile__user__username', 'job_title', 'company_name')
+    search_fields = ('profile__slug_id', 'job_title', 'company_name')
     date_hierarchy = 'start_date'
     fields = ('user', 'job_title', 'company_name',
               'start_date', 'end_date', 'job_description')
@@ -41,7 +41,7 @@ class EducationAdmin(admin.ModelAdmin):
     list_display = ('user', 'institution_name', 'degree',
                     'field_of_study', 'start_date', 'end_date')
     list_filter = ('institution_name', 'degree', 'start_date')
-    search_fields = ('profile__user__username', 'institution_name', 'degree')
+    search_fields = ('profile__slug_id', 'institution_name', 'degree')
     date_hierarchy = 'start_date'
     fields = ('user', 'institution_name', 'degree',
               'field_of_study', 'start_date', 'end_date')
