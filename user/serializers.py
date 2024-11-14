@@ -9,34 +9,34 @@ from django.core.mail import send_mail
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('id', 'phone_number')
-        read_only_fields = ('slug_id')
+        fields = ('id', 'email', 'slug_id')
+        read_only_fields = ('slug_id',)
 
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('phone_number', 'password')
+        fields = ('email', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         user = CustomUser.objects.create_user(
-            phone_number=validated_data['phone_number'],
+            email=validated_data['email'],
             password=validated_data['password'],
         )
         return user
 
 
 class PasswordResetRequestSerializer(serializers.Serializer):
-    phone_number = serializers.CharField()
+    email = serializers.CharField()
 
-    def validate_phone_number(self, value):
+    def validate_email(self, value):
         try:
-            user = CustomUser.objects.get(phone_number=value)
+            user = CustomUser.objects.get(email=value)
             self.context['user'] = user
         except CustomUser.DoesNotExist:
             raise serializers.ValidationError(
-                "User with this phone number does not exist.")
+                "User with this email does not exist.")
         return value
 
     def save(self):

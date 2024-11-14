@@ -4,6 +4,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import CustomUser
 from .serializers import UserSerializer, RegisterSerializer, PasswordResetConfirmSerializer, PasswordResetRequestSerializer
 from django.contrib.auth import authenticate
+from profiles.models import Profile
 
 
 class RegisterViewSet(viewsets.ModelViewSet):
@@ -16,18 +17,26 @@ class LoginViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
 
     def create(self, request):
-        phone_number = request.data.get('phone_number')
+        email = request.data.get('email')
         password = request.data.get('password')
 
         user = authenticate(
-            request, phone_number=phone_number, password=password)
+            request, email=email, password=password)
 
         if user is None:
             return Response({"detail": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
 
+        try:
+            profile = Profile.objects.get(user=user)
+            profile_slug_id = profile.slug_id
+        except Profile.DoesNotExist:
+            profile_slug_id = None
+
         refresh = RefreshToken.for_user(user)
+
         response_data = {
             "user": UserSerializer(user).data,
+            "profile_id": profile_slug_id,
             "refresh": str(refresh),
             "access": str(refresh.access_token),
         }
@@ -41,7 +50,7 @@ class PasswordResetRequestViewSet(viewsets.ViewSet):
         serializer = PasswordResetRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"detail": "Password reset link has been sent if the phone number is registered."}, status=status.HTTP_200_OK)
+        return Response({"detail": "Password reset link has been sent if the email is registered."}, status=status.HTTP_200_OK)
 
 
 class PasswordResetConfirmViewSet(viewsets.ViewSet):
